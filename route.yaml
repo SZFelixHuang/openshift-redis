@@ -1,0 +1,20 @@
+kind: Route
+apiVersion: route.openshift.io/v1
+metadata:
+  name: redis-route
+  annotations:
+    haproxy.router.openshift.io/tcp-mode: "true"
+  labels:
+    name: redis-route
+spec:
+  host: redis.apps.felix.com
+  to:
+    kind: Service
+    name: redis-svc
+    weight: 100
+  port:
+    targetPort: 6379
+  tls:
+    termination: passthrough
+    insecureEdgeTerminationPolicy: None
+  wildcardPolicy: None

@@ -1,0 +1,36 @@
+kind: DeploymentConfig
+apiVersion: v1
+metadata:
+  name: redis
+  labels:
+    app: redis
+spec:
+  template: 
+    metadata:
+      labels:
+        name: redis
+    spec:
+      containers:
+        - name: redis
+          image: redis
+          ports:
+            - containerPort: 6379 
+              protocol: TCP
+      imagePullSecrets:
+        - name: docker-registry
+  replicas: 1
+  triggers:
+    - type: ConfigChange 
+    - type: ImageChange
+      imageChangeParams:
+        automatic: true
+        containerNames:
+          - redis
+        from:
+          kind: ImageStreamTag
+          name: redis:latest
+  strategy: 
+    type: Rolling
+  paused: false 
+  revisionHistoryLimit: 2 
+  minReadySeconds: 0 
